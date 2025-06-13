@@ -23,7 +23,7 @@ interface ChatHeaderProps {
 export function ChatHeader({ contact, isMobile = false, onMenuClick }: ChatHeaderProps) {
   if (isMobile) {
     return (
-      <div className="md:hidden flex items-center p-4 bg-white border-b border-gray-200 sticky top-0 z-40 w-full">
+      <div className="md:hidden flex items-center p-4 bg-white border-b border-gray-200 w-full">
         <Button variant="ghost" size="sm" className="mr-2" onClick={onMenuClick}>
           <Menu className="h-5 w-5" />
         </Button>
@@ -43,7 +43,7 @@ export function ChatHeader({ contact, isMobile = false, onMenuClick }: ChatHeade
   }
 
   return (
-    <div className="hidden md:flex items-center p-4 bg-white border-b border-gray-200 sticky top-0 z-40 w-full">
+    <div className="hidden md:flex items-center p-4 bg-white border-b border-gray-200 w-full">
       <div className="relative">
         <Avatar className="h-10 w-10 mr-3">
           <AvatarFallback className={`${contact.color} text-gray-700`}>{contact.initials}</AvatarFallback>
