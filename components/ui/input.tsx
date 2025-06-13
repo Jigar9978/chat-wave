@@ -3,9 +3,12 @@
 import type React from "react"
 import { forwardRef } from "react"
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {}
+// Add a dummy property to avoid the empty interface error
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  _?: unknown // Dummy property to avoid ESLint error
+}
 
-const Input = forwardRef<HTMLInputElement, InputProps>(({ className = "", type, ...props }, ref) => {
+const Input = forwardRef<HTMLInputElement, InputProps>(({ className = "", type, _, ...props }, ref) => {
   return (
     <input
       type={type}
