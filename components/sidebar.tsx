@@ -29,13 +29,13 @@ export function Sidebar({
   isOpen = false,
 }: SidebarProps) {
   const sidebarClasses = isMobile
-    ? "fixed md:hidden w-80 h-[calc(100vh-64px)] bg-white border-r border-gray-200 z-50 overflow-hidden"
-    : "hidden md:flex md:w-80 md:flex-col md:border-r md:border-gray-200"
+    ? "fixed md:hidden w-80 h-full bg-white border-r border-gray-200 z-50 overflow-hidden top-0 left-0"
+    : "hidden md:flex md:w-80 md:flex-col md:border-r md:border-gray-200 md:min-h-0 md:max-h-full"
 
   const content = (
     <div className="flex flex-col h-full">
       {/* Sidebar Header */}
-      <div className="p-4 border-b border-gray-200">
+      <div className="p-4 border-b border-gray-200 sticky top-0 bg-white z-10">
         <h2 className="text-lg font-semibold text-gray-800">Chats</h2>
       </div>
 

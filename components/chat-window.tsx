@@ -46,7 +46,7 @@ export function ChatWindow({ contact, messages, isTyping, onSendMessage, onMenuC
   }, [messages])
 
   return (
-    <div className="flex-1 flex flex-col min-w-0 relative">
+    <div className="flex-1 flex flex-col min-w-0 relative h-full">
       {/* Mobile Header */}
       <ChatHeader contact={contact} isMobile={true} onMenuClick={onMenuClick} />
 
@@ -54,11 +54,7 @@ export function ChatWindow({ contact, messages, isTyping, onSendMessage, onMenuC
       <ChatHeader contact={contact} isMobile={false} />
 
       {/* Messages Area */}
-      <div
-        ref={messagesContainerRef}
-        className="flex-1 overflow-y-auto p-4 space-y-4 pb-2"
-        style={{ paddingBottom: "70px" }} // Extra space for input
-      >
+      <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-4 space-y-4 pb-20">
         <AnimatePresence>
           {messages.map((message) => (
             <MessageBubble key={message.id} message={message} />
@@ -71,7 +67,7 @@ export function ChatWindow({ contact, messages, isTyping, onSendMessage, onMenuC
       </div>
 
       {/* Message Input - Fixed at bottom */}
-      <div className="absolute bottom-0 left-0 right-0">
+      <div className="absolute bottom-0 left-0 right-0 bg-white">
         <MessageInput onSendMessage={onSendMessage} disabled={isTyping} />
       </div>
     </div>
