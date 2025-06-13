@@ -1,103 +1,224 @@
-import Image from "next/image";
+"use client"
 
-export default function Home() {
+import { useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { Navbar } from "@/components/navbar"
+import { Sidebar } from "@/components/sidebar"
+import { ChatWindow } from "@/components/chat-window"
+
+interface Contact {
+  id: string
+  name: string
+  initials: string
+  lastMessage: string
+  timestamp: string
+  isOnline: boolean
+  color: string
+}
+
+interface Message {
+  id: string
+  text: string
+  timestamp: string
+  isSent: boolean
+  status: "sent" | "received"
+}
+
+const contacts: Contact[] = [
+  {
+    id: "1",
+    name: "Emma Thompson",
+    initials: "EM",
+    lastMessage: "I've sent you the latest project f...",
+    timestamp: "12:45 PM",
+    isOnline: true,
+    color: "bg-blue-100",
+  },
+  {
+    id: "2",
+    name: "Michael Johnson",
+    initials: "MJ",
+    lastMessage: "Are we still meeting for coffee to...",
+    timestamp: "Yesterday",
+    isOnline: true,
+    color: "bg-green-100",
+  },
+  {
+    id: "3",
+    name: "Sophia Lee",
+    initials: "SL",
+    lastMessage: "The design team loved your pre...",
+    timestamp: "Yesterday",
+    isOnline: true,
+    color: "bg-purple-100",
+  },
+  {
+    id: "4",
+    name: "Robert Brown",
+    initials: "RB",
+    lastMessage: "Can you review the budget prop...",
+    timestamp: "Tuesday",
+    isOnline: false,
+    color: "bg-orange-100",
+  },
+  {
+    id: "5",
+    name: "Amelia Wilson",
+    initials: "AW",
+    lastMessage: "Thanks for your help with the ca...",
+    timestamp: "Monday",
+    isOnline: false,
+    color: "bg-pink-100",
+  },
+  {
+    id: "6",
+    name: "Daniel Martinez",
+    initials: "DM",
+    lastMessage: "Let's schedule a call to discuss t...",
+    timestamp: "May 25",
+    isOnline: false,
+    color: "bg-indigo-100",
+  },
+]
+
+const initialMessages: Message[] = [
+  {
+    id: "1",
+    text: "Sounds great! I've heard good things about their pasta. Looking forward to it!",
+    timestamp: "12:00 PM",
+    isSent: false,
+    status: "received",
+  },
+  {
+    id: "2",
+    text: "Oh, I almost forgot - do you have the latest version of the client presentation? I want to make sure we're all on the same page for tomorrow.",
+    timestamp: "12:05 PM",
+    isSent: false,
+    status: "received",
+  },
+  {
+    id: "3",
+    text: "I've just sent it to your email. It includes all the updates we discussed in the last meeting. Let me know if you need anything else!",
+    timestamp: "12:15 PM",
+    isSent: true,
+    status: "sent",
+  },
+  {
+    id: "4",
+    text: "Got it, thanks! I'll review it before our lunch. See you soon!",
+    timestamp: "12:20 PM",
+    isSent: false,
+    status: "received",
+  },
+  {
+    id: "5",
+    text: "Looking forward to it! 👋",
+    timestamp: "12:25 PM",
+    isSent: true,
+    status: "sent",
+  },
+]
+
+const botResponses = [
+  "That sounds great! I'm looking forward to it.",
+  "Thanks for sharing that with me.",
+  "I completely agree with your point.",
+  "Let me think about that for a moment...",
+  "That's a really interesting perspective!",
+  "I appreciate you taking the time to explain.",
+  "Could you tell me more about that?",
+  "That makes perfect sense to me.",
+  "I'm glad we're on the same page!",
+  "Thanks for the update!",
+]
+
+export default function ChatApp() {
+  const [selectedContact, setSelectedContact] = useState<Contact>(contacts[0])
+  const [messages, setMessages] = useState<Message[]>(initialMessages)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [isTyping, setIsTyping] = useState(false)
+
+  const handleSendMessage = async (messageText: string) => {
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      text: messageText,
+      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      isSent: true,
+      status: "sent",
+    }
+
+    setMessages((prev) => [...prev, userMessage])
+
+    // Simulate typing
+    setIsTyping(true)
+
+    setTimeout(() => {
+      const botMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: botResponses[Math.floor(Math.random() * botResponses.length)],
+        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        isSent: false,
+        status: "received",
+      }
+
+      setMessages((prev) => [...prev, botMessage])
+      setIsTyping(false)
+    }, 2000)
+  }
+
+  const handleContactSelect = (contact: Contact) => {
+    setSelectedContact(contact)
+    setIsSidebarOpen(false)
+    // Reset messages for demo purposes
+    setMessages(initialMessages)
+  }
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="flex flex-col h-screen bg-white">
+     
+      <Navbar />
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+      {/* Main Content Area */}
+      <div className="flex flex-1 overflow-hidden">
+        {/* Mobile Sidebar Overlay */}
+        <AnimatePresence>
+          {isSidebarOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-opacity-50 z-40 md:hidden"
+              onClick={() => setIsSidebarOpen(false)}
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+          )}
+        </AnimatePresence>
+
+        {/* Desktop Sidebar */}
+        <Sidebar
+          contacts={contacts}
+          selectedContact={selectedContact}
+          onContactSelect={handleContactSelect}
+          isMobile={false}
+        />
+
+        {/* Mobile Sidebar */}
+        <Sidebar
+          contacts={contacts}
+          selectedContact={selectedContact}
+          onContactSelect={handleContactSelect}
+          isMobile={true}
+          isOpen={isSidebarOpen}
+        />
+
+       
+        <ChatWindow
+          contact={selectedContact}
+          messages={messages}
+          isTyping={isTyping}
+          onSendMessage={handleSendMessage}
+          onMenuClick={() => setIsSidebarOpen(true)}
+        />
+      </div>
     </div>
-  );
+  )
 }
